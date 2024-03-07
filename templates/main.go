@@ -1,35 +1,54 @@
 package main
 
 import (
-	"fmt"
-	"io"
 	"log"
 	"os"
-	"strings"
+	"text/template"
 )
 
-func main() {
-	name := os.Args[1]
-	fmt.Println(os.Args[0])
-	fmt.Println(os.Args[1])
-	template := `
-	<!DOCTYPE HTML>
-	<html lang="en>
-	<head>
-	<meta charset="UTF-8">
-	<title>Hello World!</title>
-	</head>
-	<body>
-	<h1>` + name + `</h1>
-	</body>
-	</html>
-	`
+var templateContainer *template.Template
 
-	filename := "index.html"
-	file, err := os.Create(filename)
+func init() {
+	// Use ParseFiles if you only have a few files to parse
+	// PREFER to use ParseGlob to parse a whole folder of files
+	templateContainer = template.Must(template.ParseGlob("templates/*"))
+}
+
+func main() {
+	// Initial Way to create an html template
+	// name := os.Args[1]
+	// fmt.Println(os.Args[0])
+	// fmt.Println(os.Args[1])
+	// template := `
+	// <!DOCTYPE HTML>
+	// <html lang="en>
+	// <head>
+	// <meta charset="UTF-8">
+	// <title>Hello World!</title>
+	// </head>
+	// <body>
+	// <h1>` + name + `</h1>
+	// </body>
+	// </html>
+	// `
+
+	// filename := "index.html"
+	// file, err := os.Create(filename)
+	// if err != nil {
+	// 	log.Fatal("error crating file: ", err)
+	// }
+	// defer file.Close()
+	// io.Copy(file, strings.NewReader(template))
+
+	// Use execute if you have only one template.
+	// PREFER to use ExecuteTemplate to specify which template to execute
+	err := templateContainer.Execute(os.Stdout, nil)
 	if err != nil {
-		log.Fatal("error crating file: ", err)
+		log.Fatalln(err)
 	}
-	defer file.Close()
-	io.Copy(file, strings.NewReader(template))
+
+	err = templateContainer.ExecuteTemplate(os.Stdout, "tpl2.gohtml", nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
