@@ -2,9 +2,11 @@ package main
 
 import (
 	"log"
+	"math"
 	"os"
 	"strings"
 	"text/template"
+	"time"
 )
 
 var templateContainer *template.Template
@@ -12,6 +14,10 @@ var templateContainer *template.Template
 var functionMap = template.FuncMap{
 	"upperCase": strings.ToUpper,
 	"firstThree": firstThree,
+	"fdateMDY": monthDayYear,
+	"fdbl": double,
+	"fsq": square,
+	"fsqrt": sqRoot,
 }
 
 func init() {
@@ -27,6 +33,22 @@ func firstThree(s string) string {
 	s = strings.TrimSpace(s)
 	s = s[:3]
 	return s
+}
+
+func monthDayYear(t time.Time) string {
+	return t.Format("01-02-2006")
+}
+
+func double(x int) int {
+	return x*2
+}
+
+func square(x int) float64 {
+	return math.Pow(float64(x), 2)
+}
+
+func sqRoot(x float64) float64 {
+	return math.Sqrt(x)
 }
 
 func main() {
@@ -86,6 +108,18 @@ func main() {
 
 	// Function Map
 	err = templateContainer.ExecuteTemplate(os.Stdout, "functions.gohtml", myHomeTown)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// Time
+	err = templateContainer.ExecuteTemplate(os.Stdout, "time.gohtml", time.Now())
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// Pipelines
+	err = templateContainer.ExecuteTemplate(os.Stdout, "pipelines.gohtml", 5)
 	if err != nil {
 		log.Fatalln(err)
 	}
