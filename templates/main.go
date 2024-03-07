@@ -52,4 +52,20 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	foods := []string{"Pizza", "Fried Chicken", "Sushi", "Tacos"}
+	err = templateContainer.ExecuteTemplate(os.Stdout, "arrays.gohtml", foods)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	type hometown struct {
+		City string
+		State string
+	}
+	myHomeTown:= &hometown{"Dallas", "Texas"}
+	err = templateContainer.ExecuteTemplate(os.Stdout, "struct.gohtml", myHomeTown)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
