@@ -47,4 +47,9 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	err = templateContainer.ExecuteTemplate(os.Stdout, "tpl2.gohtml", "Tony")
+	if err != nil {
+		log.Fatalln(err)
+	}
 }

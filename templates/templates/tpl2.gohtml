@@ -5,6 +5,7 @@
         title>Hello World Again!</title>
     </head>
     <body>
-        <h1>` + name + `</h1>
+        {{$name := .}}
+        <h1>My name is: {{$name}}</h1>
     </body>
 </html>
