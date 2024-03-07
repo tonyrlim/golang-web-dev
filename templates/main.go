@@ -42,12 +42,8 @@ func main() {
 
 	// Use execute if you have only one template.
 	// PREFER to use ExecuteTemplate to specify which template to execute
-	err := templateContainer.Execute(os.Stdout, nil)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	err = templateContainer.ExecuteTemplate(os.Stdout, "tpl2.gohtml", nil)
+	// Passing 42 as data to template. Can only pass one piece of data ever. Best to use an aggregate data struct
+	err := templateContainer.ExecuteTemplate(os.Stdout, "tpl.gohtml", 42)
 	if err != nil {
 		log.Fatalln(err)
 	}
