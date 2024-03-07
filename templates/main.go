@@ -3,15 +3,30 @@ package main
 import (
 	"log"
 	"os"
+	"strings"
 	"text/template"
 )
 
 var templateContainer *template.Template
 
+var functionMap = template.FuncMap{
+	"upperCase": strings.ToUpper,
+	"firstThree": firstThree,
+}
+
 func init() {
 	// Use ParseFiles if you only have a few files to parse
 	// PREFER to use ParseGlob to parse a whole folder of files
-	templateContainer = template.Must(template.ParseGlob("templates/*"))
+	templateContainer = template.Must(template.New("").Funcs(functionMap).ParseGlob("templates/*"))
+
+	// ERROR: Cannot do this because the functions need to be there before you parse
+	// templateContainer = templateContainer.Funcs(functionMap)
+}
+
+func firstThree(s string) string {
+	s = strings.TrimSpace(s)
+	s = s[:3]
+	return s
 }
 
 func main() {
@@ -65,6 +80,12 @@ func main() {
 	}
 	myHomeTown:= &hometown{"Dallas", "Texas"}
 	err = templateContainer.ExecuteTemplate(os.Stdout, "struct.gohtml", myHomeTown)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// Function Map
+	err = templateContainer.ExecuteTemplate(os.Stdout, "functions.gohtml", myHomeTown)
 	if err != nil {
 		log.Fatalln(err)
 	}
