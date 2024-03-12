@@ -123,4 +123,11 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	// Predefined Global Functions
+	xs := []string{"zero", "one", "two", "three", "four", "five"}
+	err = templateContainer.ExecuteTemplate(os.Stdout, "global_functions.gohtml", xs)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
