@@ -42,15 +42,20 @@ func handle(conn net.Conn) {
 	// fmt.Println("Code got here!")
 
 	// Rot13
-	scanner := bufio.NewScanner(conn)
-	for scanner.Scan() {
-		line := strings.ToLower(scanner.Text())
-		byteSlice := []byte(line)
-		rotatedLine := rotate13(byteSlice)
+	// scanner := bufio.NewScanner(conn)
+	// for scanner.Scan() {
+	// 	line := strings.ToLower(scanner.Text())
+	// 	byteSlice := []byte(line)
+	// 	rotatedLine := rotate13(byteSlice)
 
-		fmt.Fprintf(conn, "%s - %s\n\n", line, rotatedLine)
-	}
+	// 	fmt.Fprintf(conn, "%s - %s\n\n", line, rotatedLine)
+	// }
+	// defer conn.Close()
+
+	// Exercise #1
 	defer conn.Close()
+	request(conn)
+	respond(conn)
 }
 
 func rotate13(byteSlice []byte) []byte {
@@ -63,4 +68,36 @@ func rotate13(byteSlice []byte) []byte {
 		}
 	}
 	return r13
+}
+
+func request(conn net.Conn) {
+	i := 0
+	scanner := bufio.NewScanner(conn)
+	for scanner.Scan() {
+		ln := scanner.Text()
+		fmt.Println(ln)
+		if i == 0 {
+			// request line
+			method := strings.Fields(ln)[0]
+			fmt.Println("***METHOD", method)
+			url := strings.Fields(ln)[1]
+			fmt.Println("***URL", url)
+		}
+		if ln == "" {
+			// headers are done
+			break
+		}
+		i++
+	}
+}
+
+func respond(conn net.Conn) {
+
+	body := `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title></title></head><body><strong>Hello World</strong></body></html>`
+
+	fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
+	fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
+	fmt.Fprint(conn, "Content-Type: text/html\r\n")
+	fmt.Fprint(conn, "\r\n")
+	fmt.Fprint(conn, body)
 }
