@@ -130,4 +130,10 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	// Nested Templates
+	err = templateContainer.ExecuteTemplate(os.Stdout, "nesting_templates_index.gohtml", 42)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
