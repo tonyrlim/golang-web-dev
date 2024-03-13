@@ -8,22 +8,25 @@ import (
 )
 
 var templateContainer *template.Template
+
 type handler int
 
 func (h handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Tony-Key", "This is from Tony")
+	writer.Header().Set("Content-Type", "text/html; charset=utf-8")
 	err := request.ParseForm()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	data := struct {
-		Method string
-		URL *url.URL
-		Submissions url.Values
-		Header http.Header
-		Host string
+		Method        string
+		URL           *url.URL
+		Submissions   url.Values
+		Header        http.Header
+		Host          string
 		ContentLength int64
-	} {
+	}{
 		request.Method,
 		request.URL,
 		request.Form,
