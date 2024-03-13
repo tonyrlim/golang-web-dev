@@ -1,18 +1,28 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
+	"html/template"
 )
 
-type whatever int
+var templateContainer *template.Template
+type handler int
 
-func (wh whatever) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// Do whatever
-	fmt.Fprintln(w, "Doing whatever in this handler")
+func (h handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+	err := request.ParseForm()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	templateContainer.ExecuteTemplate(writer, "tpl.gohtml", request.Form)
+}
+
+func init() {
+	templateContainer = template.Must(template.New("").ParseGlob("templates/*"))
 }
 
 func main() {
-	var wh whatever
-	http.ListenAndServe(":8080", wh)
+	var h handler
+	http.ListenAndServe(":8080", h)
 }
