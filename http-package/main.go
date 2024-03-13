@@ -1,9 +1,10 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net/http"
-	"html/template"
+	"net/url"
 )
 
 var templateContainer *template.Template
@@ -15,7 +16,23 @@ func (h handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		log.Fatalln(err)
 	}
 
-	templateContainer.ExecuteTemplate(writer, "tpl.gohtml", request.Form)
+	data := struct {
+		Method string
+		URL *url.URL
+		Submissions url.Values
+		Header http.Header
+		Host string
+		ContentLength int64
+	} {
+		request.Method,
+		request.URL,
+		request.Form,
+		request.Header,
+		request.Host,
+		request.ContentLength,
+	}
+
+	templateContainer.ExecuteTemplate(writer, "tpl.gohtml", data)
 }
 
 func init() {

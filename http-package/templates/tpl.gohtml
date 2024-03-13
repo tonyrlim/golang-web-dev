@@ -5,10 +5,41 @@
     <title>Input Type Submit</title>
 </head>
 <body>
-    {{if .}}
-    <main>
+
+<header>
+    {{if .Method}}<p>Request Method Type: <strong>{{.Method}}</strong></p>{{end}}
+    {{if .Host}}<p>Request Host: <strong>{{.Host}}</strong></p>{{end}}
+    {{if .ContentLength}}<p>Content Length: <strong>{{.ContentLength}}</strong></p>{{end}}
+    {{if .URL}}<p>URL Info:</strong></p>
+    <ul>
+        <li>Scheme: {{.URL.Scheme}}</li>
+        <li>Opaque: {{.URL.Opaque}}</li>
+        <li>Path: {{.URL.Path}}</li>
+        <li>RawPath: {{.URL.RawPath}}</li>
+        <li>OmitHost: {{.URL.OmitHost}}</li>
+        <li>ForceQuery: {{.URL.ForceQuery}}</li>
+        <li>RawQuery: {{.URL.RawQuery}}</li>
+        <li>Fragment: {{.URL.Fragment}}</li>
+        <li>RawFragment: {{.URL.RawFragment}}</li>
+    </ul>
+    {{end}}
+
+    {{if .Header}}<p>Header Info:</strong></p>
+    <ul>
+       {{range $key, $value := .Header}}
+       <li>{{$key}}</li>
+       <ul>
+       {{range $value}}
+        <li>{{.}}</li>
+        {{end}}
+       </ul>
+       {{end}}
+    </ul>
+    {{end}}
+
+    {{if .Submissions}}
         <p><strong>variable names</strong> (identifiers) and <em>values</em>:</p>
-        {{range $key, $value := .}}
+        {{range $key, $value := .Submissions}}
         <p><strong>{{$key}}</strong></p>
         <ul>
             {{range $value}}
@@ -16,9 +47,8 @@
             {{end}}
         </ul>
         {{end}}
-    </main>
     {{end}}
-
+</header>
     <form action="/" method="POST">
         <input type="text" name="fname" placeholder="first name" autofocus autocomplete="off"/>
         <input type="submit" name="submit-btn" value="Submit!"/>
